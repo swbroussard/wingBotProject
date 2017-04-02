@@ -1,0 +1,22 @@
+body {
+    background-color: Gold;
+}
+
+.centered {
+    text-align: center;
+}
+
+.largerText {
+    font-size: 24px;
+}
+
+p.centered {
+    font-size: 24px;
+    border-style: groove;
+    width: 650px;
+    margin: 50px 50px 50px 310px;
+}
+
+table.centered {
+    margin: 50px 50px 50px 555px;
+}
