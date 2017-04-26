@@ -20,3 +20,7 @@ p.centered {
 table.centered {
     margin: 50px 50px 50px 555px;
 }
+
+ul {
+    list-style-type: circle;
+}
