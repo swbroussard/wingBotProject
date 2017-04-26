@@ -31,6 +31,24 @@
             }
             elseif (!empty($fieldInput) && $fieldNumber == 1){}
         }
+        
+        function reading_json_file($jsonFile) {
+            $results = "";
+            $str = file_get_contents($jsonFile);
+            $json = json_decode($str, true);
+            
+            //$results = $results . '<pre>' . print_r($json, true) . '</pre>';
+            
+            $results = $results . "<ul>";
+            
+            $results = $results . "<li>" . $json['suggestionList'][0]['name'] . "; Scores: " . $json['suggestionList'][0]['score'] . "</li><br>";
+            $results = $results . "<li>" . $json['suggestionList'][1]['name'] . "; Scores: " . $json['suggestionList'][1]['score']. "</li><br>";
+            $results = $results . "<li>" . $json['suggestionList'][2]['name'] . "; Scores: " . $json['suggestionList'][2]['score']. "</li><br>";
+            
+            $results = $results . "</ul>";
+            
+            return $results;
+        }
         ?>
     </head>
     
@@ -40,8 +58,8 @@
             $passward = "";
             
             if($_SERVER["REQUEST_METHOD"] == "POST") {
-                required_field($_POST["userName"], 0);
-                required_field($_POST["passwrd"], 1);
+                //required_field($_POST["userName"], 0);
+                //required_field($_POST["passwrd"], 1);
                 $user_name = html_form_guard($_POST["userName"]);
                 $passward = html_form_guard($_POST["passwrd"]);
             }
@@ -52,13 +70,19 @@
         <h1 class="centered">Welcome <?php echo $user_name; ?> </h1>
         <!--<h1>Welcome User</h1>-->
         
-        <p class="centered"> You are compatible with... </p>
+        <p class="centered"> Please fill out form for top three compatabilities </p>
         
-        <ul class="centered"> 
+        <?php
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                echo reading_json_file("./topSuggestions.json");
+            }
+        ?>
+        
+        <!--<ul class="centered"> 
             <li class="centered">ary Jones</li>
             <li class="centered">Jane Smith</li>
             <li class="centered">Sally May</li>
-        </ul>
+        </ul>-->
         
         <!--for test purposes only-->
         <a href="/">home page</a>
