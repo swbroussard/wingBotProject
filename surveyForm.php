@@ -16,6 +16,31 @@
 			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
 		<link href="css/styles.css" rel="stylesheet">
+		
+		<!--form validators, Steven Broussard-->
+		<?php
+        
+        function required_field($fieldInputUserName, $fieldInputPass) {
+            if(empty($fieldInputUserName) || empty($fieldInputPass)) {
+                return "<div class='panel-heading'><h4>Facebook Username or Password was not supplied</h4></div>
+                            <div class='panel-body'>
+                                <p>Please click on back and re-enter Facebook Username and Password</p><br>
+                                <a href='/'>back</a>";
+            }
+            else {
+                return "<div class='panel-heading'><h4>Please Fill Out Form For Compatabilities.</h4></div>
+                                    <div class='panel-body'>
+                                        <form class='form' action='./authAndProc.php' method='post'>
+                                            <input type='radio' name='genderPref' value='female'>Female<br>
+                                            <input type='radio' name='genderPref' value='male'>Male<br>
+                                            <input type='radio' name='genderPref' value='both'>Female &amp Male
+                                            <br>
+                                            <input type='submit' value='Submit'>
+                                        </form>
+                                    </div>";
+            }
+        }
+		?>
 	</head>
 	<body>
 <div class="wrapper">
@@ -78,7 +103,7 @@
                     </form>
                     <ul class="nav navbar-nav">
                       <li>
-                        <a href="#"><i class="glyphicon glyphicon-home"></i> Home</a>
+                        <a href="./"><i class="glyphicon glyphicon-home"></i>Home</a>
                       </li>
                       <!--<li>
                         <a href="#postModal" role="button" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i> Post</a>
@@ -156,31 +181,36 @@
                                     <ul class="list-unstyled"><li><a href="http://www.bootply.com/templates">Dashboard</a></li><li><a href="http://www.bootply.com/templates">Darkside</a></li><li><a href="http://www.bootply.com/templates">Greenfield</a></li></ul>
                                   </div>
                               </div>-->
-                           
-                              <!--<div class="panel panel-default">
-                                <div class="panel-heading"><h4>What Is Bootstrap?</h4></div>
+                              
+                              <!--Form to fill out for preferences, Steven Broussard-->
+                              <div class="panel panel-default">
+                                  <?php
+                                    $Username = $_POST['FBUser'];
+                                    $pass = $_POST['passwrd'];
+                                    echo required_field($Username, $pass);
+                                    ?>
+                                </div>
+                                
+                                <!--<div class="panel-heading"><h4>What Is Bootstrap?</h4></div>
                                	<div class="panel-body">
-                                	Bootstrap is front end frameworkto build custom web applications that are fast, responsive &amp; intuitive. It consist of CSS and HTML for typography, forms, buttons, tables, grids, and navigation along with custom-built jQuery plug-ins and support for responsive layouts. With dozens of reusable components for navigation, pagination, labels, alerts etc..                          </div>
-                              </div>-->
-
-                           		
+                                	Bootstrap is front end frameworkto build custom web applications that are fast, responsive &amp; intuitive. It consist of CSS and HTML for typography, forms, buttons, tables, grids, and navigation along with custom-built jQuery plug-ins and support for responsive layouts. With dozens of reusable components for navigation, pagination, labels, alerts etc..                          </div>-->
                            
-                          </div>
+                        </div>
                           
                           <!-- main col right -->
                           <div class="col-sm-7">
                                
-                                <div class="well"> 
+                                <!--<div class="well"> 
                                    <form class="form" action="./authAndProc.php" method="post">
                                     <h4>Login Here</h4>
                                     <div class="input-group text-center">
                                     <input type="text" class="form-control input-lg" name="FBUser" placeholder="Enter your email address">
-                                    <input type="text" class="form-control input-lg" name="passwrd" placeholder="Password">
+                                    <input type="text" class="form-control input-lg" name="passwrd" placeholder="Password">-->
                                       <!--<span class="input-group-btn"><button class="btn btn-lg btn-primary" type="button">OK</button></span>-->
-                                    <input class="btn btn-lg btn-primary" type="submit" value="Submit">
+                                    <!--<input class="btn btn-lg btn-primary" type="submit" value="Submit">
                                     </div>
                                   </form>
-                                </div>
+                                </div>-->
                       
                                <!--<div class="panel panel-default">
                                  <div class="panel-heading"><a href="#" class="pull-right">View all</a> <h4>Bootply Editor &amp; Code Library</h4></div>
@@ -260,6 +290,9 @@
                         </div>
                       
                       <hr>
+                      
+                      <!--for test purposes only-->
+                        <!--<a href="/">home page</a>-->
                       
                       <h4 class="text-center">
                       <a href="http://bootply.com/96266" target="ext">Download this Template @Bootply</a>

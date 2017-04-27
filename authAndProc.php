@@ -17,7 +17,7 @@
 		<![endif]-->
 		<link href="css/styles.css" rel="stylesheet">
 		
-		<!--PHP form validators and XSS guards, Steven Broussard-->
+		<!--XSS guards and reading and smart printing compatabilities, Steven Broussard-->
 		<?php 
         function html_form_guard($formData) {
             $formData = trim($formData);
@@ -27,31 +27,36 @@
             return $formData;
         }
         
-        function required_field($fieldInput, $fieldNumber) {
-            if(empty($fieldInput) && $fieldNumber == 0) {
-                echo "<p class='centered'>Facebook Username not entered</p><br>
-                      <a href='/' class='centered'>Please click to enter Facebook Username</a>";
-            }
-            elseif (!empty($fieldInput) && $fieldNumber == 0) {}
-            elseif (empty($fieldInput) && $fieldNumber == 1) {
-                echo "<p class='centered'>Facebook Password not entered</p><br>
-                      <a href='/' class='centered'>Please click to enter Facebook Password</a>";
-            }
-            elseif (!empty($fieldInput) && $fieldNumber == 1){}
-        }
-        
-        function reading_json_file($jsonFile) {
+        function reading_json_file($jsonFile, $genderPrefernce) {
             $results = "";
+            $foundPref = 0;
+            $numArray = 0;
             $str = file_get_contents($jsonFile);
             $json = json_decode($str, true);
             
+            $numArray = count($json['suggestionList']);
+            
+            //for testing purposes only
             //$results = $results . '<pre>' . print_r($json, true) . '</pre>';
             
             $results = $results . "<ul>";
             
-            $results = $results . "<li>" . $json['suggestionList'][0]['name'] . "; Scores: " . $json['suggestionList'][0]['score'] . "</li><br>";
-            $results = $results . "<li>" . $json['suggestionList'][1]['name'] . "; Scores: " . $json['suggestionList'][1]['score']. "</li><br>";
-            $results = $results . "<li>" . $json['suggestionList'][2]['name'] . "; Scores: " . $json['suggestionList'][2]['score']. "</li><br>";
+            for($i = 0; $i < $numArray && $foundPref != 3; $i++) {
+                if($json['suggestionList'][$i]['gender'] == $genderPrefernce) {
+                    $results = $results . "<li>" . $json['suggestionList'][$i]['name'] . "; Scores: " . $json['suggestionList'][$i]['score'] . "</li><br>";
+                    $foundPref++;
+                }
+                elseif($genderPrefernce == "both") {
+                    $results = $results . "<li>" . $json['suggestionList'][$i]['name'] . "; Scores: " . $json['suggestionList'][$i]['score'] . "</li><br>";
+                    $foundPref++;
+                }
+            }
+            
+            if($foundPref != 3) {
+                for ($j = $foundPref; $j < 3; $j++) {
+                    $results = $results . "<li>No Results, sorry :(</li><br>";
+                }
+            }
             
             $results = $results . "</ul>";
             
@@ -60,22 +65,6 @@
         ?>
 	</head>
 	<body>
-	    
-	    <!--Receiving form data from HTML forms-->
-	    <?php
-            $user_name = "";
-            $passward = "";
-            
-            if($_SERVER["REQUEST_METHOD"] == "POST") {
-                //required_field($_POST["userName"], 0);
-                //required_field($_POST["passwrd"], 1);
-                $user_name = html_form_guard($_POST["userName"]);
-                $passward = html_form_guard($_POST["passwrd"]);
-            }
-            //$fileContent = file_get_contents("./some_folder/*.json");
-            //$json_content = json_decode($fileContent, true);
-        ?>
-	    
 <div class="wrapper">
     <div class="box">
         <div class="row row-offcanvas row-offcanvas-left">
@@ -136,7 +125,7 @@
                     </form>
                     <ul class="nav navbar-nav">
                       <li>
-                        <a href="#"><i class="glyphicon glyphicon-home"></i> Home</a>
+                        <a href="./"><i class="glyphicon glyphicon-home"></i>Home</a>
                       </li>
                       <!--<li>
                         <a href="#postModal" role="button" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i> Post</a>
@@ -241,12 +230,20 @@
                                 </div>-->
                       
                                <div class="panel panel-default">
-                                 <div class="panel-heading"><!--<a href="#" class="pull-right">View all</a>--> <h4>Your Compatabilities are ...</h4></div>
+                                 <div class="panel-heading"><!--<a href="#" class="pull-right">View all</a>--> <h4>Your Top 3 Compatabilities are ...</h4></div>
                                   <div class="panel-body">
                                       
+                                    <!--Receiving form data from HTML forms and santizing inputs-->
                                     <?php
+                                        $user_name = "";
+                                        $passward = "";
+                                        $genderPrefernce = "";
+                                    
                                         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                                            echo reading_json_file("./topSuggestions.json");
+                                            $user_name = html_form_guard($_POST["FBUser"]);
+                                            $passward = html_form_guard($_POST["passwrd"]);
+                                            $genderPrefernce = $_POST['genderPref'];
+                                            echo reading_json_file("./topSuggestions.json", $genderPrefernce);
                                         }
                                     ?>
                                       
@@ -327,7 +324,7 @@
                       <hr>
                       
                         <!--for test purposes only-->
-                        <a href="/">home page</a>
+                        <!--<a href="/">home page</a>-->
                       
                       <h4 class="text-center">
                       <a href="http://bootply.com/96266" target="ext">Download this Template @Bootply</a>
